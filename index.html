@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="GeoPortal da Paraíba: consulta interativa a poços cadastrados e visualização de dados geográficos.">
+  <meta name="theme-color" content="#102f36">
+  <title>GeoPortal PB avançado | Recursos hídricos da Paraíba</title>
+  <link rel="preconnect" href="https://unpkg.com">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+  <nav class="navbar navbar-expand-lg navbar-dark gp-navbar sticky-top" aria-label="Navegação principal"><div class="container-fluid px-lg-4">
+  <a class="navbar-brand d-flex align-items-center gap-2" href="index.html"><span class="brand-mark"><i class="bi bi-droplet-half"></i></span><span>Geo<span class="brand-light">Portal</span><small class="brand-sub d-block">AESA · PARAÍBA</small></span></a>
+  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Abrir navegação"><span class="navbar-toggler-icon"></span></button>
+  <div class="collapse navbar-collapse" id="mainNav"><ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1"><li class="nav-item"><a class="nav-link active" aria-current="page" href="index.html"><i class="bi bi-map me-1"></i>Mapa interativo</a></li><li class="nav-item"><a class="nav-link" href="galeria.html"><i class="bi bi-images me-1"></i>Galeria cartográfica</a></li><li class="nav-item"><a class="nav-link" href="downloads.html"><i class="bi bi-download me-1"></i>Dados e downloads</a></li><li class="nav-item"><a class="nav-link" href="index.html#camadas"><i class="bi bi-layers me-1"></i>Camadas GeoJSON</a></li><li class="nav-item"><a class="nav-link" href="recursos.html"><i class="bi bi-link-45deg me-1"></i>Recursos GIS</a></li></ul><button class="btn btn-outline-light btn-sm ms-lg-3 mt-3 mt-lg-0" id="btnBaixarCsv"><i class="bi bi-download me-1"></i>Exportar CSV</button></div>
+</div></nav>
+
+    <header class="hero" id="inicio">
+    <div class="container-fluid px-3 px-lg-4">
+        <div class="row align-items-end g-4">
+          <div class="col-lg-8">
+            <div class="eyebrow"><span></span> PLATAFORMA DE DADOS ESPACIAIS</div>
+            <h1>Explore os dados<br><em>da Paraíba.</em></h1>
+            <p class="hero-copy">Visualize, pesquise e consulte informações geográficas em um mapa interativo. Explore poços, açudes, bacias, drenagem, postos pluviométricos e adutoras, com consulta por clique, medição e análises cruzadas por bacia hidrográfica.</p>
+          </div>
+          <div class="col-lg-4 text-lg-end">
+            <div class="hero-location"><i class="bi bi-geo-alt-fill"></i><span>Paraíba, Brasil</span></div>
+            <div class="hero-note">Mapa interativo · Consulta espacial · Dados abertos</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+  <main id="conteudo">
+
+
+    <section class="container-fluid px-3 px-lg-4 stats-section" aria-label="Resumo da base de dados">
+      <div class="row g-3">
+        <div class="col-6 col-xl-3"><article class="stat-card"><div class="stat-icon pink"><i class="bi bi-droplet-half"></i></div><div><div class="stat-label">Poços na base</div><div class="stat-value" id="statTotal">—</div><div class="stat-foot">Registros geográficos</div></div></article></div>
+        <div class="col-6 col-xl-3"><article class="stat-card"><div class="stat-icon blue"><i class="bi bi-building"></i></div><div><div class="stat-label">Municípios</div><div class="stat-value" id="statMunicipios">—</div><div class="stat-foot">Com registros na base</div></div></article></div>
+        <div class="col-6 col-xl-3"><article class="stat-card"><div class="stat-icon green"><i class="bi bi-diagram-3"></i></div><div><div class="stat-label">Órgãos</div><div class="stat-value" id="statOrgaos">—</div><div class="stat-foot">Responsáveis identificados</div></div></article></div>
+        <div class="col-6 col-xl-3"><article class="stat-card"><div class="stat-icon gold"><i class="bi bi-speedometer2"></i></div><div><div class="stat-label">Vazão média</div><div class="stat-value" id="statVazao">—</div><div class="stat-foot">m³/h · registros informados</div></div></article></div>
+      </div>
+    </section>
+
+    <section class="container-fluid px-3 px-lg-4 workspace-section">
+      <div class="section-heading">
+        <div><div class="section-kicker">EXPLORAÇÃO ESPACIAL</div><h2>Mapa interativo</h2><p>Selecione um ponto para consultar seus atributos. Use os controles do mapa para alternar o mapa-base.</p></div>
+        <div class="map-status"><span class="status-dot"></span><span id="statusMapa">Preparando mapa…</span></div>
+      </div>
+      <div class="map-layout">
+        <aside class="map-sidebar">
+          <form id="formFiltros" role="search" aria-label="Filtrar poços" novalidate>
+            <fieldset class="filtros-grupo">
+              <legend>Filtrar poços</legend>
+              <div class="sidebar-block">
+                <label class="form-label" for="buscaMapa">Buscar poços</label>
+                <div class="input-group search-control"><span class="input-group-text"><i class="bi bi-search"></i></span><input id="buscaMapa" type="search" class="form-control" placeholder="Município, órgão, proprietário…" autocomplete="off"></div>
+              </div>
+              <div class="sidebar-block">
+                <label class="form-label" for="filtroOrgao">Órgão responsável</label>
+                <select id="filtroOrgao" class="form-select"><option value="">Todos os órgãos</option></select>
+              </div>
+              <div class="sidebar-block">
+                <label class="form-label" for="filtroMunicipio">Município (por mesorregião)</label>
+                <select id="filtroMunicipio" class="form-select"><option value="">Todos os municípios</option></select>
+              </div>
+              <fieldset class="sidebar-block faixa">
+                <legend>Profundidade (m)</legend>
+                <div class="input-group input-group-sm"><label class="visually-hidden" for="fProfMin">Profundidade mínima, em metros</label><input id="fProfMin" name="prof_min" type="number" class="form-control" min="0" step="1" inputmode="decimal" placeholder="mín."><span class="input-group-text">a</span><label class="visually-hidden" for="fProfMax">Profundidade máxima, em metros</label><input id="fProfMax" name="prof_max" type="number" class="form-control" min="0" step="1" inputmode="decimal" placeholder="máx."></div>
+              </fieldset>
+              <fieldset class="sidebar-block faixa">
+                <legend>Vazão (m³/h)</legend>
+                <div class="input-group input-group-sm"><label class="visually-hidden" for="fVazMin">Vazão mínima, em metros cúbicos por hora</label><input id="fVazMin" name="vaz_min" type="number" class="form-control" min="0" step="0.1" inputmode="decimal" placeholder="mín."><span class="input-group-text">a</span><label class="visually-hidden" for="fVazMax">Vazão máxima, em metros cúbicos por hora</label><input id="fVazMax" name="vaz_max" type="number" class="form-control" min="0" step="0.1" inputmode="decimal" placeholder="máx."></div>
+              </fieldset>
+              <p id="msgFaixa" class="small text-danger mb-0" role="alert"></p>
+            </fieldset>
+            <fieldset class="filtros-grupo mt-3">
+              <legend>Aparência</legend>
+              <div class="sidebar-block">
+                <div class="d-flex justify-content-between align-items-center"><label class="form-label mb-0" for="opacidade">Opacidade dos pontos</label><output class="range-value" id="valorOpacidade" for="opacidade">90%</output></div>
+                <input id="opacidade" name="opacidade" class="form-range mt-2" type="range" min="20" max="100" value="90">
+              </div>
+            </fieldset>
+            <div class="filter-summary"><span>Registros filtrados</span><strong id="totalFiltrado">—</strong></div>
+            <div class="d-grid gap-2 mt-3">
+              <button type="submit" class="btn btn-primary" id="btnAplicar"><i class="bi bi-funnel me-1"></i>Aplicar filtros</button>
+              <button type="reset" class="btn btn-light border" id="btnLimpar"><i class="bi bi-arrow-counterclockwise me-1"></i>Limpar filtros</button>
+            </div>
+          </form>
+          <hr>
+          <div class="sidebar-block">
+            <div class="sidebar-title" id="camadas"><i class="bi bi-layers me-2"></i>Camadas</div>
+            <div class="form-check mt-3"><input class="form-check-input" type="checkbox" id="togglePocos" checked><label class="form-check-label" for="togglePocos">Poços cadastrados <span class="legend-dot"></span></label></div>
+            <div class="form-check mt-2"><input class="form-check-input" type="checkbox" id="toggleAcudes" checked><label class="form-check-label" for="toggleAcudes">Açudes <span class="lg lg-acudes"></span></label></div>
+            <div class="form-check mt-2"><input class="form-check-input" type="checkbox" id="toggleBacias" checked><label class="form-check-label" for="toggleBacias">Bacias hidrográficas <span class="lg lg-bacias"></span></label></div>
+            <div class="form-check mt-2"><input class="form-check-input" type="checkbox" id="toggleDrenagem"><label class="form-check-label" for="toggleDrenagem">Drenagem principal <span class="lg lg-drenagem" style="width:18px"></span></label><div class="form-text">Carrega 7,7 MB na primeira ativação.</div></div>
+            <div class="form-check mt-2"><input class="form-check-input" type="checkbox" id="togglePostos" checked><label class="form-check-label" for="togglePostos">Postos pluviométricos <span class="lg" style="background:var(--cor-postos)"></span></label></div>
+            <div class="form-check mt-2"><input class="form-check-input" type="checkbox" id="toggleAdutoras" checked><label class="form-check-label" for="toggleAdutoras">Adutoras</label><div class="form-text"><span style="color:#1d4ed8;font-weight:700">▬</span> existente · <span style="color:#d97706;font-weight:700">▬</span> em obras · <span style="color:#7c3aed;font-weight:700">▬</span> planejada</div></div>
+            <div id="listaImportadas"></div>
+            <div class="mt-3 pt-2 border-top small fw-bold text-secondary">FERRAMENTAS</div>
+            <div class="d-grid gap-2 mt-2" role="group" aria-label="Ferramentas do mapa">
+              <button class="btn btn-sm btn-outline-dark" id="btnIdentificar" aria-pressed="false"><i class="bi bi-cursor me-1"></i>Consultar ponto no mapa</button>
+              <button class="btn btn-sm btn-outline-dark" id="btnMedir" aria-pressed="false"><i class="bi bi-rulers me-1"></i>Medir distância e área</button>
+              <button class="btn btn-sm btn-light border" id="btnLimparMedida"><i class="bi bi-eraser me-1"></i>Limpar medição</button>
+            </div>
+            <p class="small mt-2 mb-0 fw-semibold" id="medInfo" aria-live="polite"></p>
+            <button class="btn btn-sm btn-outline-secondary w-100 mt-3" data-bs-toggle="modal" data-bs-target="#modalGeoJSON"><i class="bi bi-file-earmark-arrow-up me-1"></i>Adicionar GeoJSON</button>
+            <button class="btn btn-sm btn-primary w-100 mt-2" data-bs-toggle="modal" data-bs-target="#modalExportar"><i class="bi bi-image me-1"></i>Baixar mapa com legenda</button>
+            <button class="btn btn-sm btn-outline-primary w-100 mt-2" data-bs-toggle="modal" data-bs-target="#modalCamadas"><i class="bi bi-file-earmark-zip me-1"></i>Baixar camadas (GeoJSON)</button>
+            <p class="small text-secondary mt-2 mb-0">As camadas adicionadas são temporárias e ficam disponíveis durante esta sessão.</p>
+          </div>
+          <div class="sidebar-bottom"><i class="bi bi-info-circle me-1"></i>Fonte: AESA · bases de poços, açudes, bacias e drenagem.</div>
+        </aside>
+        <div class="map-main">
+          <div class="map-frame">
+            <button class="btn btn-light map-export-btn" data-bs-toggle="modal" data-bs-target="#modalExportar" title="Baixar mapa com legenda" aria-label="Baixar mapa com legenda"><i class="bi bi-image"></i></button>
+            <div id="map" role="application" aria-label="Mapa interativo dos poços cadastrados na Paraíba"></div>
+            <div class="map-attribution-note"><i class="bi bi-crosshair me-1"></i> Coordenadas geográficas · WGS 84</div>
+          </div>
+          <section id="legenda" class="legenda-card" aria-labelledby="tLegenda"><h3 id="tLegenda">Legenda</h3><ul id="listaLegenda" class="legenda-lista"><li class="text-secondary">Carregando…</li></ul></section>
+        </div>
+      </div>
+    </section>
+
+    <section class="container-fluid px-3 px-lg-4 meta-section" id="metadados" aria-labelledby="tMeta">
+      <div class="section-heading"><div><div class="section-kicker">DOCUMENTAÇÃO DAS CAMADAS</div><h2 id="tMeta">Metadados das camadas</h2><p>Ficha técnica de cada camada, gerada a partir dos dados carregados no geoportal.</p></div></div>
+      <div class="row g-3" id="listaMeta"></div>
+    </section>
+
+    <section class="container-fluid px-3 px-lg-4 data-section" id="consulta">
+      <div class="section-heading table-heading">
+        <div><div class="section-kicker">CONSULTA DE ATRIBUTOS</div><h2>Registros da base</h2><p>Pesquise, navegue pelos registros e selecione uma linha para localizar o ponto no mapa.</p></div>
+        <div class="table-actions"><span class="result-count" id="contagemTabela">Carregando registros…</span><button class="btn btn-outline-primary btn-sm" id="btnTabelaCsv"><i class="bi bi-filetype-csv me-1"></i>Baixar CSV</button></div>
+      </div>
+      <div class="table-card">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle mb-0" id="tabelaPocos">
+            <caption>Poços cadastrados na Paraíba que atendem aos filtros atuais. Use os botões do cabeçalho para ordenar as colunas.</caption>
+            <thead><tr><th scope="col" aria-sort="none"><button type="button" class="th-sort" data-k="id">ID</button></th><th scope="col" aria-sort="none"><button type="button" class="th-sort" data-k="municipio">Município</button></th><th scope="col" aria-sort="none"><button type="button" class="th-sort" data-k="proprietario">Proprietário</button></th><th scope="col" aria-sort="none"><button type="button" class="th-sort" data-k="orgao">Órgão</button></th><th scope="col" aria-sort="none"><button type="button" class="th-sort" data-k="profundidade">Profundidade (m)</button></th><th scope="col" aria-sort="none"><button type="button" class="th-sort" data-k="q_m3h">Vazão (m³/h)</button></th><th scope="col" aria-sort="none"><button type="button" class="th-sort" data-k="equipamento">Equipamento</button></th><th scope="col"><span class="visually-hidden">Ação</span></th></tr></thead>
+            <tbody id="corpoTabela"><tr><td colspan="8" class="text-center py-5 text-secondary">Carregando dados geográficos…</td></tr></tbody>
+            <tfoot><tr><th scope="row" colspan="4">Resumo dos registros filtrados</th><td id="tfProf">—</td><td id="tfVaz">—</td><td colspan="2" id="tfTotal">—</td></tr></tfoot>
+          </table>
+        </div>
+        <div class="table-footer"><span id="infoPagina">—</span><nav aria-label="Paginação da tabela"><ul class="pagination pagination-sm mb-0" id="paginacao"></ul></nav></div>
+      </div>
+    </section>
+    <section class="container-fluid px-3 px-lg-4 sobre-section" id="sobre" aria-labelledby="tSobre">
+      <div class="section-heading"><div><div class="section-kicker">SOBRE</div><h2 id="tSobre">Sobre este geoportal</h2></div></div>
+      <div class="row g-3">
+        <div class="col-lg-6"><article class="chart-card"><h3>Finalidade</h3><p class="mb-0">Reúne poços, açudes, bacias hidrográficas, drenagem principal, postos pluviométricos e adutoras da Paraíba para consulta, medição e análise espacial. Os dados podem ser baixados em <abbr title="Formato aberto para dados geográficos em JSON">GeoJSON</abbr> e abertos em programas de <abbr title="Sistema de Informação Geográfica">SIG</abbr>, como o QGIS.</p></article></div>
+        <div class="col-lg-6"><article class="chart-card"><h3>Referências técnicas</h3>
+          <dl class="ficha mb-0">
+            <dt>Coordenadas dos dados</dt><dd>Graus (longitude e latitude), <abbr title="Sistema de Referência Geocêntrico para as Américas">SIRGAS</abbr> 2000 / <abbr title="World Geodetic System 1984">WGS 84</abbr></dd>
+            <dt>Projeção de exibição</dt><dd>Web Mercator (<code>EPSG:3857</code>)</dd>
+            <dt>Escala</dt><dd>Varia com o zoom. Agora: <strong class="escala-atual">—</strong>. Os mapas da galeria usam 1:1.200.000 e 1:600.000.</dd>
+            <dt>Mapas-base</dt><dd>OpenStreetMap e imagem de satélite da Esri</dd>
+            <dt>Tecnologias</dt><dd>HTML5, CSS3, Bootstrap e Leaflet</dd>
+          </dl></article></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="app-footer">
+    <div class="container-fluid px-3 px-lg-4">
+      <div class="d-flex flex-column flex-md-row justify-content-between gap-2"><div><strong>GeoPortal PB</strong><span> · Plataforma de exploração geográfica</span></div><div>Desenvolvido com HTML5, CSS3, Bootstrap e Leaflet</div></div>
+      <p class="rodape-tecnico mb-0"><small>Datum: <strong>SIRGAS 2000</strong> | Escala atual: <strong class="escala-atual">—</strong> | Fonte: <abbr title="Agência Executiva de Gestão das Águas do Estado da Paraíba">AESA</abbr> | Atualizado em: <time datetime="2026-11-23">23 de novembro de 2026</time> | Condições de uso: consulte a fonte original de cada dado</small></p>
+    </div>
+  </footer>
+
+  <div class="modal fade" id="modalGeoJSON" tabindex="-1" aria-labelledby="modalGeoJSONLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered"><div class="modal-content">
+      <div class="modal-header"><div><div class="section-kicker">CAMADAS PERSONALIZADAS</div><h2 class="modal-title fs-5" id="modalGeoJSONLabel">Adicionar camada GeoJSON</h2></div><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button></div>
+      <div class="modal-body">
+        <label class="form-label" for="arquivoGeo">Selecionar arquivo (.geojson ou .json)</label><input class="form-control" type="file" id="arquivoGeo" accept=".geojson,.json,application/geo+json,application/json">
+        <div class="text-center text-secondary small my-3">ou cole o conteúdo GeoJSON</div>
+        <textarea id="textoGeo" class="form-control font-monospace small" rows="5" placeholder='{"type":"FeatureCollection","features":[...]}'></textarea>
+        <label class="form-label mt-3" for="nomeCamada">Nome da camada</label><input class="form-control" id="nomeCamada" maxlength="70" placeholder="Ex.: Limites municipais">
+        <div id="mensagemGeo" class="small mt-3" role="status" aria-live="polite"></div>
+        <p class="small text-secondary mt-2 mb-0">O GeoJSON deve usar coordenadas geográficas em longitude/latitude. Arquivos em UTM precisam ser reprojetados antes da importação.</p>
+      </div>
+      <div class="modal-footer"><button class="btn btn-light border" data-bs-dismiss="modal">Cancelar</button><button class="btn btn-primary" id="btnImportarGeo"><i class="bi bi-plus-lg me-1"></i>Adicionar ao mapa</button></div>
+    </div></div>
+  </div>
+
+  <div class="modal fade" id="modalExportar" tabindex="-1" aria-labelledby="modalExportarLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered"><div class="modal-content">
+      <div class="modal-header"><div><div class="section-kicker">LAYOUT DE IMPRESSÃO</div><h2 class="modal-title fs-5" id="modalExportarLabel">Baixar mapa com legenda</h2></div><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button></div>
+      <div class="modal-body">
+        <p class="small text-secondary">O arquivo reproduz o enquadramento atual do mapa e as camadas ativas. Ajuste o zoom e as camadas antes de baixar.</p>
+        <label class="form-label" for="expTitulo">Título</label><input class="form-control" id="expTitulo" maxlength="80" value="Mapa da Paraíba">
+        <label class="form-label mt-3" for="expSubtitulo">Subtítulo</label><input class="form-control" id="expSubtitulo" maxlength="110" value="Recursos hídricos: poços, açudes, bacias e drenagem">
+        <div class="row g-3 mt-1">
+          <div class="col-6"><div class="form-check"><input class="form-check-input" type="checkbox" id="expLegenda" checked><label class="form-check-label" for="expLegenda">Legenda</label></div><div class="form-check"><input class="form-check-input" type="checkbox" id="expEscala" checked><label class="form-check-label" for="expEscala">Escala</label></div><div class="form-check"><input class="form-check-input" type="checkbox" id="expNorte" checked><label class="form-check-label" for="expNorte">Seta de norte</label></div></div>
+          <div class="col-6"><label class="form-label" for="expRes">Resolução</label><select class="form-select" id="expRes"><option value="1">Padrão</option><option value="2" selected>Alta</option><option value="3">Muito alta</option></select></div>
+        </div>
+        <div id="msgExportar" class="small mt-3" role="status" aria-live="polite"></div>
+      </div>
+      <div class="modal-footer"><button class="btn btn-light border" data-bs-dismiss="modal">Fechar</button><button class="btn btn-outline-primary" id="btnExportarPdf"><i class="bi bi-filetype-pdf me-1"></i>Baixar PDF</button><button class="btn btn-primary" id="btnExportarPng"><i class="bi bi-file-earmark-image me-1"></i>Baixar PNG</button></div>
+    </div></div>
+  </div>
+
+  <div class="modal fade" id="modalCamadas" tabindex="-1" aria-labelledby="modalCamadasLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered"><div class="modal-content">
+      <div class="modal-header"><div><div class="section-kicker">DADOS DAS CAMADAS</div><h2 class="modal-title fs-5" id="modalCamadasLabel">Baixar camadas do geoportal</h2></div><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button></div>
+      <div class="modal-body">
+        <p class="small text-secondary">Escolha as camadas. Uma camada gera um arquivo <code>.geojson</code>; várias geram um <code>.zip</code>. Coordenadas em WGS 84 (EPSG:4326), prontas para o QGIS.</p>
+        <div id="listaDownloads" role="group" aria-label="Camadas disponíveis"></div>
+        <div class="form-check mt-3 pt-3 border-top"><input class="form-check-input" type="checkbox" id="dlFiltrados"><label class="form-check-label" for="dlFiltrados">Poços: baixar apenas os que passam nos filtros atuais</label></div>
+        <div id="msgCamadas" class="small mt-3" role="status" aria-live="polite"></div>
+      </div>
+      <div class="modal-footer"><button class="btn btn-light border" data-bs-dismiss="modal">Fechar</button><button class="btn btn-primary" id="btnBaixarCamadas"><i class="bi bi-download me-1"></i>Baixar selecionadas</button></div>
+    </div></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+  <script src="data/pocos_pb.js"></script>
+  <script src="data/postos_pluviometricos.js"></script>
+  <script src="data/adutoras.js"></script>
+  <script src="data/acudes.js"></script>
+  <script src="data/bacias_hidro.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

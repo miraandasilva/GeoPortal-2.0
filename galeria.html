@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Galeria de mapas temáticos do GeoPortal da Paraíba.">
+  <title>Galeria cartográfica | GeoPortal</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link href="css/main.css" rel="stylesheet">
+  <style>
+    .map-thumb.has-img{position:relative;overflow:hidden;height:auto;aspect-ratio:4/3;padding:0;background:#f4f1ea}
+    .map-thumb.has-img .map-chip{position:absolute;z-index:2}
+    .map-thumb-link{position:absolute;inset:0;display:block}
+    .map-thumb-link img{width:100%;height:100%;object-fit:cover;object-position:center;display:block;transition:transform .35s ease}
+    .map-card:hover .map-thumb-link img{transform:scale(1.04)}
+  </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark gp-navbar sticky-top" aria-label="Navegação principal"><div class="container-fluid px-lg-4">
+  <a class="navbar-brand d-flex align-items-center gap-2" href="index.html"><span class="brand-mark"><i class="bi bi-droplet-half"></i></span><span>Geo<span class="brand-light">Portal</span><small class="brand-sub d-block">AESA · PARAÍBA</small></span></a>
+  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Abrir navegação"><span class="navbar-toggler-icon"></span></button>
+  <div class="collapse navbar-collapse" id="mainNav"><ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1"><li class="nav-item"><a class="nav-link" href="index.html"><i class="bi bi-map me-1"></i>Mapa interativo</a></li><li class="nav-item"><a class="nav-link active" aria-current="page" href="galeria.html"><i class="bi bi-images me-1"></i>Galeria cartográfica</a></li><li class="nav-item"><a class="nav-link" href="downloads.html"><i class="bi bi-download me-1"></i>Dados e downloads</a></li><li class="nav-item"><a class="nav-link" href="index.html#camadas"><i class="bi bi-layers me-1"></i>Camadas GeoJSON</a></li><li class="nav-item"><a class="nav-link" href="recursos.html"><i class="bi bi-link-45deg me-1"></i>Recursos GIS</a></li></ul><a class="btn btn-sm btn-accent ms-lg-3 mt-3 mt-lg-0" href="downloads.html">Acessar dados <i class="bi bi-arrow-right ms-1"></i></a></div>
+</div></nav>
+<header class="page-hero"><div class="container-fluid px-lg-5"><div class="section-kicker">ACERVO CARTOGRÁFICO</div><h1>Cartas e mapas<br><span>temáticos.</span></h1><p>Explore produtos cartográficos e abra os arquivos disponíveis para consulta detalhada.</p><div class="page-hero-meta"><span><i class="bi bi-collection me-2"></i>Mapas temáticos</span><span><i class="bi bi-filetype-pdf me-2"></i>Arquivos PDF</span><span><i class="bi bi-file-earmark-image me-2"></i>Imagens dos mapas</span></div></div></header>
+<main class="container-fluid px-lg-5 py-5">
+  <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4"><div class="section-heading"><div class="section-kicker">BIBLIOTECA DE MAPAS</div><h2>Explore o acervo</h2><p>Selecione uma categoria para filtrar os mapas.</p></div><div class="search-wrap"><i class="bi bi-search"></i><input id="gallerySearch" class="form-control" type="search" placeholder="Buscar mapa..." aria-label="Buscar mapa"></div></div>
+  <div class="filter-pills mb-4" role="group" aria-label="Filtrar mapas"><button class="filter-btn active" data-filter="todos">Todos</button><button class="filter-btn" data-filter="terras">Uso das terras</button><button class="filter-btn" data-filter="ambiente">Ambiente físico</button><button class="filter-btn" data-filter="hidricos">Recursos hídricos</button></div>
+  <div class="row g-4" id="galleryGrid">
+    <div class="col-sm-6 col-xl-3 gallery-item" data-category="terras" data-title="Classe de capacidade de uso das terras"><article class="map-card"><div class="map-thumb has-img"><span class="map-chip">TERRAS</span><a class="map-thumb-link" href="pdf/Classe_de_Capacidade_de_Uso_das_Terras.pdf" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img
+  src="imagens/classe_capacidade_uso_terras.jpg"
+  alt="Mapa da Paraíba com as classes de capacidade de uso das terras, em cores que vão de terras com pedregosidade e erosão a terras de boa qualidade para cultivo"
+  width="2480"
+  height="1754"
+  loading="lazy"
+  title="Classe de Capacidade de Uso das Terras — Escala 1:1.200.000 — Fonte: AESA / ATECEL (2002)"></a></div><div class="map-card-body"><div class="map-card-meta"><span><i class="bi bi-filetype-pdf me-1"></i>PDF</span><span>Mapa temático</span></div><h3>Classe de capacidade de uso das terras</h3><p>Representação temática relacionada à capacidade de uso do solo.</p><a class="btn btn-card" href="pdf/Classe_de_Capacidade_de_Uso_das_Terras.pdf" target="_blank" rel="noopener">Abrir mapa <i class="bi bi-arrow-up-right ms-1"></i></a></div></article></div>
+    <div class="col-sm-6 col-xl-3 gallery-item" data-category="terras" data-title="Classe de terras para irrigação"><article class="map-card"><div class="map-thumb has-img"><span class="map-chip">IRRIGAÇÃO</span><a class="map-thumb-link" href="pdf/Classe_de_Terras_para_Irrigacao.pdf" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img
+  src="imagens/classe_terras_irrigacao.jpg"
+  alt="Mapa da Paraíba com as terras aráveis de uso especial, de aptidão restrita e as terras não aráveis para agricultura irrigada"
+  width="2363"
+  height="1772"
+  loading="lazy"
+  title="Classe de Terras para Irrigação — Escala 1:1.200.000 — Fonte: Atlas do Plano Estadual de Recursos Hídricos da Paraíba / AESA"></a></div><div class="map-card-body"><div class="map-card-meta"><span><i class="bi bi-filetype-pdf me-1"></i>PDF</span><span>Mapa temático</span></div><h3>Classe de terras para irrigação</h3><p>Mapa temático de classes de terras relacionadas à irrigação.</p><a class="btn btn-card" href="pdf/Classe_de_Terras_para_Irrigacao.pdf" target="_blank" rel="noopener">Abrir mapa <i class="bi bi-arrow-up-right ms-1"></i></a></div></article></div>
+    <div class="col-sm-6 col-xl-3 gallery-item" data-category="ambiente" data-title="Geomorfologia do Estado da Paraíba"><article class="map-card"><div class="map-thumb has-img"><span class="map-chip">GEOMORFOLOGIA</span><a class="map-thumb-link" href="pdf/Geomorfologia_do_Estado_da_Paraiba.pdf" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img
+  src="imagens/geomorfologia_paraiba.jpg"
+  alt="Mapa geomorfológico da Paraíba mostrando depressão sertaneja, planalto da Borborema, planaltos residuais, planícies e tabuleiros costeiros"
+  width="2363"
+  height="1772"
+  loading="lazy"
+  title="Geomorfologia do Estado da Paraíba — Escala 1:1.200.000 — Fonte: Atlas do Plano Estadual de Recursos Hídricos da Paraíba / AESA"></a></div><div class="map-card-body"><div class="map-card-meta"><span><i class="bi bi-filetype-pdf me-1"></i>PDF</span><span>Mapa temático</span></div><h3>Geomorfologia do Estado da Paraíba</h3><p>Representação das formas de relevo do território paraibano.</p><a class="btn btn-card" href="pdf/Geomorfologia_do_Estado_da_Paraiba.pdf" target="_blank" rel="noopener">Abrir mapa <i class="bi bi-arrow-up-right ms-1"></i></a></div></article></div>
+    <div class="col-sm-6 col-xl-3 gallery-item" data-category="ambiente" data-title="Geologia do Estado da Paraíba"><article class="map-card"><div class="map-thumb has-img"><span class="map-chip">GEOLOGIA</span><a class="map-thumb-link" href="pdf/Geologia_do_Estado_da_Paraiba.pdf" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img
+  src="imagens/geologia_paraiba.jpg"
+  alt="Mapa geológico da Paraíba com unidades geológicas representadas em diferentes cores, do litoral ao sertão"
+  width="2363"
+  height="1772"
+  loading="lazy"
+  title="Geologia do Estado da Paraíba — Escala 1:1.200.000 — Fonte: Atlas do Plano Estadual de Recursos Hídricos da Paraíba / AESA"></a></div><div class="map-card-body"><div class="map-card-meta"><span><i class="bi bi-filetype-pdf me-1"></i>PDF</span><span>Mapa temático</span></div><h3>Geologia do Estado da Paraíba</h3><p>Mapa temático sobre a constituição geológica estadual.</p><a class="btn btn-card" href="pdf/Geologia_do_Estado_da_Paraiba.pdf" target="_blank" rel="noopener">Abrir mapa <i class="bi bi-arrow-up-right ms-1"></i></a></div></article></div>
+    <div class="col-sm-6 col-xl-3 gallery-item" data-category="hidricos" data-title="Bacias hidrográficas"><article class="map-card"><div class="map-thumb has-img"><span class="map-chip">BACIAS</span><a class="map-thumb-link" href="imagens/bacias_hidrograficas.png" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img
+  src="imagens/bacias_hidrograficas.png"
+  alt="Mapa das bacias hidrográficas da Paraíba, com Piranhas, Paraíba, Curimataú, Mamanguape, Abiaí, Gramame e demais bacias"
+  width="1268"
+  height="863"
+  loading="lazy"
+  title="Bacias Hidrográficas — Escala 1:1.200.000 — Fonte: AESA (2009)"></a></div><div class="map-card-body"><div class="map-card-meta"><span><i class="bi bi-file-earmark-image me-1"></i>PNG</span><span>Mapa temático</span></div><h3>Bacias hidrográficas</h3><p>Divisão do território paraibano em bacias e sub-bacias hidrográficas.</p><a class="btn btn-card" href="imagens/bacias_hidrograficas.png" target="_blank" rel="noopener">Abrir mapa <i class="bi bi-arrow-up-right ms-1"></i></a></div></article></div>
+    <div class="col-sm-6 col-xl-3 gallery-item" data-category="hidricos" data-title="Áreas de atuação dos comitês de bacias"><article class="map-card"><div class="map-thumb has-img"><span class="map-chip">COMITÊS</span><a class="map-thumb-link" href="imagens/areas_comites.png" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img
+  src="imagens/areas_comites.png"
+  alt="Mapa com as áreas de atuação dos comitês de bacias hidrográficas dos rios de domínio estadual da Paraíba"
+  width="1270"
+  height="869"
+  loading="lazy"
+  title="Áreas de Atuação de Comitês de Bacias Hidrográficas de Rios de Domínio Estadual — Escala 1:600.000 — Fonte: AESA (2009)"></a></div><div class="map-card-body"><div class="map-card-meta"><span><i class="bi bi-file-earmark-image me-1"></i>PNG</span><span>Mapa temático</span></div><h3>Áreas de atuação dos comitês de bacias</h3><p>Comitês de bacias hidrográficas de rios de domínio estadual.</p><a class="btn btn-card" href="imagens/areas_comites.png" target="_blank" rel="noopener">Abrir mapa <i class="bi bi-arrow-up-right ms-1"></i></a></div></article></div>
+    <div class="col-sm-6 col-xl-3 gallery-item" data-category="hidricos" data-title="Áreas de atuação das gerências regionais"><article class="map-card"><div class="map-thumb has-img"><span class="map-chip">GERÊNCIAS</span><a class="map-thumb-link" href="imagens/areas_atuacao.png" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img
+  src="imagens/areas_atuacao.png"
+  alt="Mapa das áreas de atuação das gerências regionais de bacias hidrográficas da Paraíba, com sedes em Sousa, Patos, Campina Grande e João Pessoa"
+  width="1056"
+  height="722"
+  loading="lazy"
+  title="Áreas de Atuação das Gerências Regionais de Bacias Hidrográficas — Escala 1:600.000 — Fonte: AESA (2009)"></a></div><div class="map-card-body"><div class="map-card-meta"><span><i class="bi bi-file-earmark-image me-1"></i>PNG</span><span>Mapa temático</span></div><h3>Áreas de atuação das gerências regionais</h3><p>Gerências Regionais de Bacias Hidrográficas: Sousa, Patos, Campina Grande e João Pessoa.</p><a class="btn btn-card" href="imagens/areas_atuacao.png" target="_blank" rel="noopener">Abrir mapa <i class="bi bi-arrow-up-right ms-1"></i></a></div></article></div>
+    <div class="col-sm-6 col-xl-3 gallery-item" data-category="hidricos" data-title="Açudes monitorados para qualidade da água"><article class="map-card"><div class="map-thumb has-img"><span class="map-chip">AÇUDES</span><a class="map-thumb-link" href="imagens/acudes_monitorados.png" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img
+  src="imagens/acudes_monitorados.png"
+  alt="Mapa da Paraíba com a localização dos açudes monitorados para qualidade da água, sobre as bacias hidrográficas"
+  width="1070"
+  height="737"
+  loading="lazy"
+  title="Açudes Monitorados para Qualidade da Água — Escala 1:1.700.000 — Fonte: AESA (2009)"></a></div><div class="map-card-body"><div class="map-card-meta"><span><i class="bi bi-file-earmark-image me-1"></i>PNG</span><span>Mapa temático</span></div><h3>Açudes monitorados para qualidade da água</h3><p>Localização dos açudes monitorados para qualidade da água, por bacia hidrográfica.</p><a class="btn btn-card" href="imagens/acudes_monitorados.png" target="_blank" rel="noopener">Abrir mapa <i class="bi bi-arrow-up-right ms-1"></i></a></div></article></div>
+    <div class="col-sm-6 col-xl-3 gallery-item" data-category="hidricos" data-title="Infraestrutura hídrica e adutoras"><article class="map-card"><div class="map-thumb has-img"><span class="map-chip">ADUTORAS</span><a class="map-thumb-link" href="imagens/area_adutoras.jpg" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img
+  src="imagens/area_adutoras.jpg"
+  alt="Mapa da infraestrutura hídrica da Paraíba com adutoras existentes, em execução e projetadas, açudes e áreas de influência"
+  width="1067"
+  height="899"
+  loading="lazy"
+  title="Infraestrutura Hídrica e Área de Influência das Adutoras — Fonte: AESA (2007)"></a></div><div class="map-card-body"><div class="map-card-meta"><span><i class="bi bi-file-earmark-image me-1"></i>JPG</span><span>Mapa temático</span></div><h3>Infraestrutura hídrica e adutoras</h3><p>Infraestrutura hídrica e áreas de influência das adutoras do Estado.</p><a class="btn btn-card" href="imagens/area_adutoras.jpg" target="_blank" rel="noopener">Abrir mapa <i class="bi bi-arrow-up-right ms-1"></i></a></div></article></div>
+  </div>
+  <div id="emptyGallery" class="empty-state d-none"><i class="bi bi-search"></i><h3>Nenhum mapa encontrado</h3><p>Tente outro termo ou categoria.</p></div>
+  <div class="download-callout mt-5"><div class="callout-icon"><i class="bi bi-cloud-arrow-down"></i></div><div><h3>Precisa dos dados para trabalhar no SIG?</h3><p>Acesse a área de downloads para consultar os arquivos geográficos disponíveis.</p></div><a class="btn btn-accent ms-lg-auto" href="downloads.html">Ir para downloads <i class="bi bi-arrow-right ms-1"></i></a></div>
+</main>
+<footer class="gp-footer"><div class="container-fluid px-lg-5 d-flex flex-wrap justify-content-between gap-2"><span><strong>GeoPortal</strong> · Recursos territoriais da Paraíba</span><a href="index.html">Voltar ao mapa <i class="bi bi-arrow-up-right"></i></a></div></footer>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script><script src="js/main.js"></script>
+</body></html>
