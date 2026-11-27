@@ -172,8 +172,6 @@ a{color:var(--gp-acc-dark)}
   .map-sidebar{position:static;max-height:none}
   .map-main #map{height:65vh;min-height:380px}
 }
-.map-export-btn{position:absolute;z-index:500;left:10px;top:100px;width:34px;height:34px;padding:0;display:grid;place-items:center;border:2px solid rgba(0,0,0,.25);border-radius:4px;background:#fff}
-.map-export-btn:hover{background:#f4f4f4}
 
 /* ---------- Gráficos ---------- */
 .chart-card{height:100%;background:var(--gp-surf);border:1px solid var(--gp-line);border-radius:12px;padding:1rem}
@@ -228,8 +226,7 @@ abbr[title]{text-decoration:underline dotted;cursor:help}
 
 /* ---------- Impressão: só mapa, legenda e tabela ---------- */
 @media print{
-  .gp-navbar,.map-sidebar,.map-export-btn,.skip-link,.table-actions,.leaflet-control-container,.btn,.app-footer .d-flex{display:none!important}
-  .map-layout{display:block!important}
+  .gp-navbar,.map-sidebar,  .map-layout{display:block!important}
   .map-main #map{height:480px!important;border:1px solid #999}
   .hero{background:none!important;color:#000!important;padding:0 0 .5rem!important}
   .stats-section{margin-top:0!important}
@@ -328,3 +325,9 @@ h1,h2,h3{font-variation-settings:'opsz' 72;letter-spacing:-.015em}
 @media (max-width:991px){.map-main{order:-1}}
 .alert-info{--bs-alert-bg:#f3e8d2;--bs-alert-border-color:#e1cfa8;--bs-alert-color:#5a4129;--bs-alert-link-color:#8f3f1e}
 @media (max-width:991px){.map-main #map{height:46vh;min-height:300px}}
+
+/* ---- visual enxuto: detalhes técnicos recolhidos ---- */
+.popup-det{margin-top:.5rem}
+.popup-det summary,.meta-det summary{cursor:pointer;font-size:.8rem;font-weight:600;color:var(--gp-acc-dark,#1f6f9f)}
+.meta-det code{display:inline-block;margin:.15rem .2rem 0 0}
+.meta-comum{padding:.5rem .75rem;border-left:3px solid var(--gp-acc-dark,#1f6f9f);background:rgba(0,0,0,.03);border-radius:4px}

@@ -21,7 +21,7 @@
   <nav class="navbar navbar-expand-lg navbar-dark gp-navbar sticky-top" aria-label="Navegação principal"><div class="container-fluid px-lg-4">
   <a class="navbar-brand d-flex align-items-center gap-2" href="index.html"><span class="brand-mark"><i class="bi bi-droplet-half"></i></span><span>Geo<span class="brand-light">Portal</span><small class="brand-sub d-block">AESA · PARAÍBA</small></span></a>
   <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Abrir navegação"><span class="navbar-toggler-icon"></span></button>
-  <div class="collapse navbar-collapse" id="mainNav"><ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1"><li class="nav-item"><a class="nav-link active" aria-current="page" href="index.html"><i class="bi bi-map me-1"></i>Mapa interativo</a></li><li class="nav-item"><a class="nav-link" href="galeria.html"><i class="bi bi-images me-1"></i>Galeria cartográfica</a></li><li class="nav-item"><a class="nav-link" href="downloads.html"><i class="bi bi-download me-1"></i>Dados e downloads</a></li><li class="nav-item"><a class="nav-link" href="index.html#camadas"><i class="bi bi-layers me-1"></i>Camadas GeoJSON</a></li><li class="nav-item"><a class="nav-link" href="recursos.html"><i class="bi bi-link-45deg me-1"></i>Recursos GIS</a></li></ul><button class="btn btn-outline-light btn-sm ms-lg-3 mt-3 mt-lg-0" id="btnBaixarCsv"><i class="bi bi-download me-1"></i>Exportar CSV</button></div>
+  <div class="collapse navbar-collapse" id="mainNav"><ul class="navbar-nav ms-auto align-items-lg-center gap-lg-1"><li class="nav-item"><a class="nav-link active" aria-current="page" href="index.html"><i class="bi bi-map me-1"></i>Mapa</a></li><li class="nav-item"><a class="nav-link" href="index.html#camadas"><i class="bi bi-layers me-1"></i>Camadas</a></li><li class="nav-item"><a class="nav-link" href="index.html#consulta"><i class="bi bi-table me-1"></i>Tabela</a></li><li class="nav-item"><a class="nav-link" href="downloads.html"><i class="bi bi-download me-1"></i>Baixar dados</a></li><li class="nav-item dropdown"><a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi bi-three-dots me-1"></i>Mais</a><ul class="dropdown-menu dropdown-menu-end"><li><a class="dropdown-item" href="galeria.html"><i class="bi bi-images me-2"></i>Galeria cartográfica</a></li><li><a class="dropdown-item" href="recursos.html"><i class="bi bi-link-45deg me-2"></i>Recursos GIS</a></li><li><hr class="dropdown-divider"></li><li><button type="button" class="dropdown-item" id="btnBaixarCsv"><i class="bi bi-filetype-csv me-2"></i>Exportar CSV (poços)</button></li></ul></li></ul></div>
 </div></nav>
 
     <header class="hero" id="inicio">
@@ -113,7 +113,7 @@
               </div></div>
             </div>
             <div class="accordion-item">
-              <h3 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#pnlFerr" aria-expanded="false" aria-controls="pnlFerr"><i class="bi bi-tools me-2"></i>Ferramentas e exportação</button></h3>
+              <h3 class="accordion-header"><button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#pnlFerr" aria-expanded="false" aria-controls="pnlFerr"><i class="bi bi-tools me-2"></i>Ferramentas e downloads</button></h3>
               <div id="pnlFerr" data-bs-parent="#accSide" class="accordion-collapse collapse"><div class="accordion-body">
                 <p class="small text-secondary">Também disponíveis na barra à esquerda do mapa.</p>
                 <div class="d-grid gap-2" role="group" aria-label="Ferramentas do mapa">
@@ -123,7 +123,6 @@
                 </div>
                 <p class="small mt-2 mb-3 fw-semibold" id="medInfo" aria-live="polite"></p>
                 <div class="d-grid gap-2">
-                  <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalExportar"><i class="bi bi-image me-1"></i>Baixar mapa com legenda</button>
                   <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#modalCamadas"><i class="bi bi-file-earmark-zip me-1"></i>Baixar camadas (GeoJSON)</button>
                 </div>
               </div></div>
@@ -147,19 +146,21 @@
 
     <section class="container-fluid px-3 px-lg-4 data-section" id="consulta">
       <div class="section-heading table-heading">
-        <div><div class="section-kicker">CONSULTA DE ATRIBUTOS</div><h2>Registros da base</h2><p>Pesquise, navegue pelos registros e selecione uma linha para localizar o ponto no mapa.</p></div>
-        <div class="table-actions"><span class="result-count" id="contagemTabela">Carregando registros…</span><button class="btn btn-outline-primary btn-sm" id="btnTabelaCsv"><i class="bi bi-filetype-csv me-1"></i>Baixar CSV</button></div>
+        <div><div class="section-kicker">CONSULTA DE ATRIBUTOS</div><h2>Registros da base</h2><p>Selecione uma linha para localizar o poço no mapa. Todas as colunas estão no CSV.</p></div>
+        <div class="table-actions"><span class="result-count" id="contagemTabela">Carregando registros…</span><button class="btn btn-outline-secondary btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#painelTabela" aria-expanded="false" aria-controls="painelTabela"><i class="bi bi-table me-1"></i>Mostrar / ocultar tabela</button><button class="btn btn-outline-primary btn-sm" id="btnTabelaCsv"><i class="bi bi-filetype-csv me-1"></i>Baixar CSV</button></div>
       </div>
+      <div class="collapse" id="painelTabela">
       <div class="table-card">
         <div class="table-responsive">
           <table class="table table-hover align-middle mb-0" id="tabelaPocos">
             <caption>Poços cadastrados na Paraíba que atendem aos filtros atuais. Use os botões do cabeçalho para ordenar as colunas.</caption>
-            <thead><tr><th scope="col" aria-sort="none"><button type="button" class="th-sort" data-k="id">ID</button></th><th scope="col" aria-sort="none"><button type="button" class="th-sort" data-k="municipio">Município</button></th><th scope="col" aria-sort="none"><button type="button" class="th-sort" data-k="proprietario">Proprietário</button></th><th scope="col" aria-sort="none"><button type="button" class="th-sort" data-k="orgao">Órgão</button></th><th scope="col" aria-sort="none"><button type="button" class="th-sort" data-k="profundidade">Profundidade</button></th><th scope="col" aria-sort="none"><button type="button" class="th-sort" data-k="q_m3h">Vazão (m³/h)</button></th><th scope="col" aria-sort="none"><button type="button" class="th-sort" data-k="equipamento">Equipamento</button></th><th scope="col"><span class="visually-hidden">Ação</span></th></tr></thead>
-            <tbody id="corpoTabela"><tr><td colspan="8" class="text-center py-5 text-secondary">Carregando dados geográficos…</td></tr></tbody>
-            <tfoot><tr><th scope="row" colspan="4">Resumo dos registros filtrados</th><td id="tfProf">—</td><td id="tfVaz">—</td><td colspan="2" id="tfTotal">—</td></tr></tfoot>
+            <thead><tr><th scope="col" aria-sort="none"><button type="button" class="th-sort" data-k="id">ID</button></th><th scope="col" aria-sort="none"><button type="button" class="th-sort" data-k="municipio">Município</button></th><th scope="col" aria-sort="none"><button type="button" class="th-sort" data-k="orgao">Órgão</button></th><th scope="col" aria-sort="none"><button type="button" class="th-sort" data-k="profundidade">Profundidade</button></th><th scope="col" aria-sort="none"><button type="button" class="th-sort" data-k="q_m3h">Vazão (m³/h)</button></th><th scope="col"><span class="visually-hidden">Ação</span></th></tr></thead>
+            <tbody id="corpoTabela"><tr><td colspan="6" class="text-center py-5 text-secondary">Carregando dados geográficos…</td></tr></tbody>
+            <tfoot><tr><th scope="row" colspan="3">Resumo dos registros filtrados</th><td id="tfProf">—</td><td id="tfVaz">—</td><td id="tfTotal">—</td></tr></tfoot>
           </table>
         </div>
         <div class="table-footer"><span id="infoPagina">—</span><nav aria-label="Paginação da tabela"><ul class="pagination pagination-sm mb-0" id="paginacao"></ul></nav></div>
+      </div>
       </div>
     </section>
     <section class="container-fluid px-3 px-lg-4 sobre-section" id="sobre" aria-labelledby="tSobre">
@@ -200,23 +201,6 @@
     </div></div>
   </div>
 
-  <div class="modal fade" id="modalExportar" tabindex="-1" aria-labelledby="modalExportarLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered"><div class="modal-content">
-      <div class="modal-header"><div><div class="section-kicker">LAYOUT DE IMPRESSÃO</div><h2 class="modal-title fs-5" id="modalExportarLabel">Baixar mapa com legenda</h2></div><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button></div>
-      <div class="modal-body">
-        <p class="small text-secondary">O arquivo reproduz o enquadramento atual do mapa e as camadas ativas. Ajuste o zoom e as camadas antes de baixar.</p>
-        <label class="form-label" for="expTitulo">Título</label><input class="form-control" id="expTitulo" maxlength="80" value="Mapa da Paraíba">
-        <label class="form-label mt-3" for="expSubtitulo">Subtítulo</label><input class="form-control" id="expSubtitulo" maxlength="110" value="Recursos hídricos da Paraíba">
-        <div class="row g-3 mt-1">
-          <div class="col-6"><div class="form-check"><input class="form-check-input" type="checkbox" id="expLegenda" checked><label class="form-check-label" for="expLegenda">Legenda</label></div><div class="form-check"><input class="form-check-input" type="checkbox" id="expEscala" checked><label class="form-check-label" for="expEscala">Escala</label></div><div class="form-check"><input class="form-check-input" type="checkbox" id="expNorte" checked><label class="form-check-label" for="expNorte">Seta de norte</label></div></div>
-          <div class="col-6"><label class="form-label" for="expRes">Resolução</label><select class="form-select" id="expRes"><option value="1">Padrão</option><option value="2" selected>Alta</option><option value="3">Muito alta</option></select></div>
-        </div>
-        <div id="msgExportar" class="small mt-3" role="status" aria-live="polite"></div>
-      </div>
-      <div class="modal-footer"><button class="btn btn-light border" data-bs-dismiss="modal">Fechar</button><button class="btn btn-outline-primary" id="btnExportarPdf"><i class="bi bi-filetype-pdf me-1"></i>Baixar PDF</button><button class="btn btn-primary" id="btnExportarPng"><i class="bi bi-file-earmark-image me-1"></i>Baixar PNG</button></div>
-    </div></div>
-  </div>
-
   <div class="modal fade" id="modalCamadas" tabindex="-1" aria-labelledby="modalCamadasLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered"><div class="modal-content">
       <div class="modal-header"><div><div class="section-kicker">DADOS DAS CAMADAS</div><h2 class="modal-title fs-5" id="modalCamadasLabel">Baixar camadas do geoportal</h2></div><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button></div>
@@ -239,8 +223,6 @@
   <script src="data/acudes.js"></script>
   <script src="data/bacias_hidro.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

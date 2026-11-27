@@ -11,7 +11,7 @@
       return;
     }
 
-    /* cores das camadas: uma única fonte (variáveis CSS em main.css), usadas no mapa, na legenda e na exportação */
+    /* cores das camadas: uma única fonte (variáveis CSS em main.css), usadas no mapa e na legenda */
     var cv = function (n, d) { return (getComputedStyle(document.documentElement).getPropertyValue(n) || '').trim() || d; };
     var rgba = function (hx, a) { var n = parseInt(String(hx).replace('#', ''), 16); return 'rgba(' + (n >> 16 & 255) + ',' + (n >> 8 & 255) + ',' + (n & 255) + ',' + a + ')'; };
     var COR = { pocos: cv('--cor-pocos', '#b83a1e'), acudes: cv('--cor-acudes', '#1f6f9f'), acudesBorda: cv('--cor-acudes-borda', '#124a6b'), drenagem: cv('--cor-drenagem', '#4a9cc4'),
@@ -22,13 +22,18 @@
     var norm = function (s) { return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''); };
     var status = function (t) { var e = $('statusMapa'); if (e) e.textContent = t; };
 
-    function popup(titulo, p, campos) {
-      var rows = campos.map(function (c) {
+    function linhasPopup(p, campos) {
+      return campos.map(function (c) {
         var v = p[c[1]];
         if (v === null || v === undefined || v === '') return '';
         return '<tr><th scope="row">' + esc(c[0]) + '</th><td>' + esc(typeof v === 'number' && c[2] !== undefined ? nf(v) + c[2] : v) + '</td></tr>';
       }).join('');
-      return '<strong>' + esc(titulo) + '</strong><table class="popup-attr">' + rows + '</table>';
+    }
+    /* essenciais ficam visíveis; campos técnicos/brutos ficam recolhidos em "Detalhes técnicos" */
+    function popup(titulo, p, campos, detalhes) {
+      var det = detalhes ? linhasPopup(p, detalhes) : '';
+      return '<strong>' + esc(titulo) + '</strong><table class="popup-attr">' + linhasPopup(p, campos) + '</table>' +
+        (det ? '<details class="popup-det"><summary>Detalhes técnicos</summary><table class="popup-attr">' + det + '</table></details>' : '');
     }
 
     var map = L.map('map', { preferCanvas: true, zoomSnap: 0.25, zoomDelta: 0.5, wheelPxPerZoomLevel: 90 }).setView([-7.2, -36.8], 8);
@@ -48,7 +53,7 @@
         onEachFeature: function (f, l) {
           var p = f.properties;
           l.bindTooltip(esc(p.Nome || 'Bacia'), { sticky: true });
-          l.bindPopup(function () { return popup('Bacia ' + (p.Nome || ''), p, [['Código', 'Cod'], ['Comitê', 'Comite'], ['Área', 'Area_Km2', ' km²'], ['Perímetro', 'Perimetro', ' km'], ['Volume', 'Volume(%)', ' %']]); });
+          l.bindPopup(function () { return popup('Bacia ' + (p.Nome || ''), p, [['Comitê', 'Comite'], ['Área', 'Area_Km2', ' km²'], ['Perímetro', 'Perimetro', ' km']], [['Código', 'Cod'], ['Volume', 'Volume(%)', ' %']]); });
         }
       });
     }
@@ -60,7 +65,9 @@
           l.bindTooltip(esc(nome), { sticky: true });
           l.bindPopup(function () {
             var d = Object.assign({}, p, { cap: (p.Capacidade || 0) / 1e6 || null, morto: (p.Vol_Morto || 0) / 1e6 || null, esp: (p.A_Espelho || 0) / 1e4 || null });
-            return popup(nome, d, [['Município', 'Municipio'], ['Microrregião', 'Microrreg'], ['Mesorregião', 'Mesorreg'], ['Proprietário', 'Propriet'], ['Órgão responsável', 'Org_Resp'], ['Finalidade', 'Finalidade'], ['Capacidade', 'cap', ' hm³'], ['Volume morto', 'morto', ' hm³'], ['Área do espelho', 'esp', ' ha'], ['Altura da barragem', 'Alt_Barrag', ' m'], ['Comprimento', 'Comp_', ' m'], ['Curso barrado', 'Curso_Bar'], ['Início da construção', 'Inic_Const'], ['Conclusão', 'Conclusao']]);
+            return popup(nome, d,
+              [['Município', 'Municipio'], ['Capacidade', 'cap', ' hm³'], ['Finalidade', 'Finalidade'], ['Órgão responsável', 'Org_Resp']],
+              [['Microrregião', 'Microrreg'], ['Mesorregião', 'Mesorreg'], ['Proprietário', 'Propriet'], ['Volume morto', 'morto', ' hm³'], ['Área do espelho', 'esp', ' ha'], ['Altura da barragem', 'Alt_Barrag', ' m'], ['Comprimento', 'Comp_', ' m'], ['Curso barrado', 'Curso_Bar'], ['Início da construção', 'Inic_Const'], ['Conclusão', 'Conclusao'], ['ID do registro', 'OBJECTID']]);
           });
         }
       });
@@ -73,7 +80,7 @@
         },
         onEachFeature: function (f, l) {
           var p = f.properties;
-          l.bindPopup(function () { return popup(p.Nome || 'Trecho de drenagem', p, [['Ordem', 'Ordem'], ['Zona', 'Zona'], ['Domínio', 'Dominio'], ['Código Otto', 'CodigoOtto']]); });
+          l.bindPopup(function () { return popup(p.Nome || 'Trecho de drenagem', p, [['Ordem', 'Ordem'], ['Domínio', 'Dominio']], [['Zona', 'Zona'], ['Código Otto', 'CodigoOtto']]); });
         }
       });
     }
@@ -112,7 +119,7 @@
         onEachFeature: function (f, l) {
           var p = f.properties;
           l.bindTooltip(esc(p.adutora) + ' · ' + esc(p.situacao), { sticky: true });
-          l.bindPopup(function () { return popup(p.adutora, Object.assign({}, p, { km: kmGeom(f.geometry) }), [['Situação', 'situacao'], ['Estado', 'estado'], ['Extensão do trecho', 'km', ' km']]); });
+          l.bindPopup(function () { return popup(p.adutora, Object.assign({}, p, { km: kmGeom(f.geometry) }), [['Situação', 'situacao'], ['Extensão do trecho', 'km', ' km']], [['Estado', 'estado']]); });
         }
       });
     }
@@ -153,7 +160,7 @@
     function marcador(r) {
       var m = L.circleMarker([r.lat, r.lng], { radius: 6, color: '#fff', weight: 1.5, fillColor: COR.pocos, fillOpacity: opac });
       m.bindTooltip('Poço ' + r.id, { direction: 'top' });
-      m.bindPopup(function () { return popup('Poço ' + r.id, r.p, [['Proprietário', 'proprietario'], ['Órgão responsável', 'orgao'], ['Data de perfuração', 'data_perfuracao'], ['Município', 'municipio'], ['Microrregião', 'microregiao'], ['Mesorregião', 'mesoregiao'], ['Profundidade', 'profundidade', ' m'], ['Vazão', 'q_m3h', ' m³/h'], ['Equipamento', 'equipamento']]); });
+      m.bindPopup(function () { return popup('Poço ' + r.id, r.p, [['Município', 'municipio'], ['Profundidade', 'profundidade', ' m'], ['Vazão', 'q_m3h', ' m³/h'], ['Órgão responsável', 'orgao']], [['Proprietário', 'proprietario'], ['Equipamento', 'equipamento'], ['Data de perfuração', 'data_perfuracao'], ['Microrregião', 'microregiao'], ['Mesorregião', 'mesoregiao']]); });
       return m;
     }
     linhas.forEach(function (r) { marcadores[r.id] = marcador(r); });
@@ -188,8 +195,8 @@
       var ini = (pagina - 1) * POR_PAG, fatia = ordenados().slice(ini, ini + POR_PAG);
       $('corpoTabela').innerHTML = fatia.length ? fatia.map(function (r) {
         var p = r.p;
-        return '<tr><th scope="row">' + esc(r.id) + '</th><td>' + esc(p.municipio || '—') + '</td><td>' + esc(p.proprietario || '—') + '</td><td>' + esc(p.orgao || '—') + '</td><td>' + (p.profundidade != null ? nf(p.profundidade) + ' m' : '—') + '</td><td>' + (p.q_m3h != null ? nf(p.q_m3h) : '—') + '</td><td>' + esc(p.equipamento || '—') + '</td><td><button class="btn btn-sm btn-outline-primary" data-loc="' + esc(r.id) + '"><i class="bi bi-crosshair me-1"></i>Localizar</button></td></tr>';
-      }).join('') : '<tr><td colspan="8" class="text-center py-5 text-secondary">Nenhum registro encontrado.</td></tr>';
+        return '<tr><th scope="row">' + esc(r.id) + '</th><td>' + esc(p.municipio || '—') + '</td><td>' + esc(p.orgao || '—') + '</td><td>' + (p.profundidade != null ? nf(p.profundidade) + ' m' : '—') + '</td><td>' + (p.q_m3h != null ? nf(p.q_m3h) : '—') + '</td><td><button class="btn btn-sm btn-outline-primary" data-loc="' + esc(r.id) + '"><i class="bi bi-crosshair me-1"></i>Localizar</button></td></tr>';
+      }).join('') : '<tr><td colspan="6" class="text-center py-5 text-secondary">Nenhum registro encontrado.</td></tr>';
       $('contagemTabela').textContent = nf(tot, 0) + ' registros';
       $('infoPagina').textContent = tot ? 'Mostrando ' + (ini + 1) + '–' + (ini + fatia.length) + ' de ' + nf(tot, 0) : 'Sem registros';
       var ini2 = Math.max(1, Math.min(pagina - 2, pags - 4)), fim = Math.min(pags, ini2 + 4), h = '';
@@ -302,7 +309,6 @@
       btn('house', 'Voltar ao estado inteiro', function () { map.fitBounds(HOME); });
       barraBtn.id = btn('cursor', 'Consultar ponto no mapa', function () { setFerr('id'); });
       barraBtn.med = btn('rulers', 'Medir distância e área', function () { setFerr('med'); });
-      btn('image', 'Baixar mapa com legenda', function () { bootstrap.Modal.getOrCreateInstance($('modalExportar')).show(); });
       return c; } });
     new Barra().addTo(map);
     $('btnIdentificar').addEventListener('click', function () { setFerr('id'); });
@@ -420,12 +426,12 @@
         { t: 'Postos pluviométricos', g: 'Pontos', d: typeof postos_pluviometricos !== 'undefined' ? postos_pluviometricos : null },
         { t: 'Adutoras', g: 'Linhas', d: typeof adutoras !== 'undefined' ? adutoras : null }
       ];
-      $('listaMeta').innerHTML = defs.map(function (x) {
+      $('listaMeta').innerHTML = '<div class="col-12"><p class="meta-comum small text-secondary mb-0"><i class="bi bi-info-circle me-1"></i><strong>Em todas as camadas:</strong> ' + SRC + '. Arquivos para download em <a href="downloads.html">Dados e downloads</a>.</p></div>' + defs.map(function (x) {
         var n = x.n || (x.d ? x.d.features.length : null), campos = x.campos || (x.d && x.d.features.length ? Object.keys(x.d.features[0].properties) : []);
         return '<div class="col-md-6 col-xl-4"><article class="chart-card meta-card"><h3>' + esc(x.t) + '</h3><dl class="ficha">' +
           '<dt>Geometria</dt><dd>' + x.g + '</dd><dt>Feições</dt><dd>' + (n != null ? nf(n, 0) : '—') + '</dd>' +
-          '<dt>Atributos</dt><dd>' + (campos.length ? campos.slice(0, 14).map(function (c) { return '<code>' + esc(c) + '</code>'; }).join(' ') : '—') + '</dd>' +
-          '<dt>Referência espacial</dt><dd>' + SRC + '</dd><dt>Fonte</dt><dd>' + (x.f || 'Não informada nos dados') + '</dd></dl>' + (x.nota ? '<p class="small text-secondary mb-0">' + x.nota + '</p>' : '') + '</article></div>';
+          '<dt>Fonte</dt><dd>' + (x.f || 'Fonte não informada') + '</dd>' +
+          '<dt>Atributos</dt><dd>' + (campos.length ? '<details class="meta-det"><summary>Ver atributos brutos (' + campos.length + ')</summary>' + campos.map(function (c) { return '<code>' + esc(c) + '</code>'; }).join(' ') + '</details>' : '—') + '</dd></dl>' + (x.nota ? '<p class="small text-secondary mb-0">' + x.nota + '</p>' : '') + '</article></div>';
       }).join('');
     }
     function atualizarEscala() {                        /* escala aproximada (96 dpi) para o zoom atual */
@@ -513,91 +519,6 @@
       return it;
     }
 
-    function barraEscala() {
-      var c = map.getCenter(), mpp = 156543.03392 * Math.cos(c.lat * Math.PI / 180) / Math.pow(2, map.getZoom());
-      var alvo = mpp * 120, passos = [100, 200, 250, 500, 1000, 2000, 2500, 5000, 10000, 20000, 25000, 50000, 100000, 200000], d = passos[0];
-      passos.forEach(function (p) { if (p <= alvo) d = p; });
-      return { px: d / mpp, rot: d >= 1000 ? (d / 1000) + ' km' : d + ' m' };
-    }
-
-    function compor(mc, o) {
-      var s = o.s, m = 24 * s, hd = 84 * s, ft = 54 * s, lw = o.legenda ? 270 * s : 0, gap = o.legenda ? 16 * s : 0;
-      var W = m * 2 + mc.width + gap + lw, H = hd + mc.height + ft + m;
-      var cv = document.createElement('canvas'); cv.width = W; cv.height = H;
-      var x = cv.getContext('2d'), mx = m, my = hd;
-      x.fillStyle = '#fff'; x.fillRect(0, 0, W, H);
-      x.fillStyle = '#2c261f'; x.fillRect(0, 0, W, hd);
-      x.fillStyle = '#fff'; x.textBaseline = 'alphabetic';
-      x.font = '800 ' + 26 * s + 'px Fraunces, Georgia, serif'; x.fillText(o.titulo, m, 40 * s);
-      x.font = '500 ' + 14 * s + 'px "DM Sans", "Segoe UI", sans-serif'; x.globalAlpha = 0.85; x.fillText(o.subtitulo, m, 64 * s); x.globalAlpha = 1;
-      x.drawImage(mc, mx, my);
-      x.strokeStyle = '#2c261f'; x.lineWidth = 1.5 * s; x.strokeRect(mx, my, mc.width, mc.height);
-
-      if (o.norte) {                                   /* seta de norte */
-        var nx = mx + mc.width - 38 * s, ny = my + 12 * s;
-        x.fillStyle = 'rgba(255,255,255,.9)'; x.fillRect(nx - 4 * s, ny - 4 * s, 34 * s, 52 * s);
-        x.fillStyle = '#2c261f'; x.beginPath(); x.moveTo(nx + 13 * s, ny); x.lineTo(nx + 24 * s, ny + 30 * s); x.lineTo(nx + 13 * s, ny + 24 * s); x.lineTo(nx + 2 * s, ny + 30 * s); x.closePath(); x.fill();
-        x.font = '800 ' + 14 * s + 'px sans-serif'; x.textAlign = 'center'; x.fillText('N', nx + 13 * s, ny + 44 * s); x.textAlign = 'left';
-      }
-      if (o.escala) {                                  /* barra de escala */
-        var e = barraEscala(), bw = e.px * s, bx = mx + 14 * s, by = my + mc.height - 16 * s;
-        x.fillStyle = 'rgba(255,255,255,.9)'; x.fillRect(bx - 8 * s, by - 28 * s, bw + 16 * s, 40 * s);
-        x.fillStyle = '#2c261f'; x.fillRect(bx, by - 4 * s, bw, 4 * s);
-        x.fillRect(bx, by - 12 * s, 2 * s, 12 * s); x.fillRect(bx + bw - 2 * s, by - 12 * s, 2 * s, 12 * s);
-        x.font = '600 ' + 12 * s + 'px sans-serif'; x.fillText('0', bx, by - 16 * s); x.textAlign = 'right'; x.fillText(e.rot, bx + bw, by - 16 * s); x.textAlign = 'left';
-      }
-      if (o.legenda) {                                 /* legenda */
-        var lx = mx + mc.width + gap, it = itensLegenda(), pad = 14 * s;
-        x.strokeStyle = '#d3dcda'; x.lineWidth = s; x.strokeRect(lx, my, lw, mc.height);
-        x.fillStyle = '#2c261f'; x.font = '800 ' + 16 * s + 'px Fraunces, Georgia, serif'; x.fillText('Legenda', lx + pad, my + 28 * s);
-        var step = Math.min(24 * s, (mc.height - 56 * s) / Math.max(it.length, 1)), y = my + 56 * s;
-        it.forEach(function (i) {
-          var ix = lx + pad + (i.rec ? 10 * s : 0), cy = y - 5 * s;
-          if (i.t === 'titulo') { x.fillStyle = '#15262b'; x.font = '700 ' + 13 * s + 'px "DM Sans", sans-serif'; x.fillText(i.rot, lx + pad, y); y += step; return; }
-          if (i.t === 'ponto') { x.fillStyle = '#fff'; x.beginPath(); x.arc(ix + 9 * s, cy, 8 * s, 0, 7); x.fill(); x.fillStyle = i.cor; x.beginPath(); x.arc(ix + 9 * s, cy, 6 * s, 0, 7); x.fill(); }
-          else if (i.t === 'linha') { x.strokeStyle = i.cor; x.lineWidth = 2.5 * s; x.beginPath(); x.moveTo(ix, cy); x.lineTo(ix + 18 * s, cy); x.stroke(); }
-          else { x.globalAlpha = i.a; x.fillStyle = i.cor; x.fillRect(ix, cy - 6 * s, 18 * s, 12 * s); x.globalAlpha = 1; x.strokeStyle = i.borda; x.lineWidth = 1.2 * s; x.strokeRect(ix, cy - 6 * s, 18 * s, 12 * s); }
-          x.fillStyle = '#15262b'; x.font = '500 ' + 13 * s + 'px "DM Sans", sans-serif';
-          var r = String(i.rot); while (x.measureText(r).width > lw - (ix - lx) - 30 * s - pad && r.length > 4) r = r.slice(0, -2);
-          x.fillText(r === String(i.rot) ? r : r + '…', ix + 26 * s, y); y += step;
-        });
-      }
-      var base = map.hasLayer(sat) ? 'Imagens © Esri' : '© contribuidores do OpenStreetMap';
-      x.fillStyle = '#52666b'; x.font = '500 ' + 12 * s + 'px "DM Sans", sans-serif';
-      x.fillText('Fonte: AESA · Base cartográfica: ' + base, m, my + mc.height + 24 * s);
-      x.fillText('Sistema de coordenadas: WGS 84 (EPSG:4326) · Gerado em ' + new Date().toLocaleDateString('pt-BR'), m, my + mc.height + 42 * s);
-      return cv;
-    }
-
-    function gerarMapa(formato) {
-      var aviso = $('msgExportar'), botoes = [$('btnExportarPng'), $('btnExportarPdf')];
-      var erro = function (t) { aviso.textContent = t; aviso.className = 'small mt-3 text-danger'; };
-      if (typeof html2canvas === 'undefined') return erro('Biblioteca html2canvas não carregada. Verifique a conexão.');
-      var o = { s: Number($('expRes').value), titulo: $('expTitulo').value.trim() || 'Mapa da Paraíba', subtitulo: $('expSubtitulo').value.trim(), legenda: $('expLegenda').checked, escala: $('expEscala').checked, norte: $('expNorte').checked };
-      botoes.forEach(function (b) { b.disabled = true; });
-      aviso.textContent = 'Gerando layout…'; aviso.className = 'small mt-3 text-secondary';
-      html2canvas($('map'), { useCORS: true, scale: o.s, logging: false, ignoreElements: function (el) { return el.classList && (el.classList.contains('leaflet-control-container') || el.classList.contains('leaflet-popup-pane') || el.classList.contains('leaflet-tooltip-pane')); } })
-        .then(function (mc) {
-          var cv = compor(mc, o), nome = 'mapa_geoportal_pb';
-          if (formato === 'pdf') {
-            var J = window.jspdf && window.jspdf.jsPDF; if (!J) throw new Error('Biblioteca jsPDF não carregada.');
-            var pdf = new J({ orientation: cv.width >= cv.height ? 'l' : 'p', unit: 'mm', format: 'a4' });
-            var pw = pdf.internal.pageSize.getWidth() - 10, ph = pdf.internal.pageSize.getHeight() - 10, k = Math.min(pw / cv.width, ph / cv.height);
-            pdf.addImage(cv.toDataURL('image/jpeg', 0.92), 'JPEG', 5 + (pw - cv.width * k) / 2, 5, cv.width * k, cv.height * k);
-            pdf.save(nome + '.pdf');
-          } else {
-            cv.toBlob(function (b) {
-              if (!b) return erro('Não foi possível gerar a imagem (restrição de CORS no mapa-base).');
-              var a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = nome + '.png'; document.body.appendChild(a); a.click(); a.remove();
-            }, 'image/png');
-          }
-          aviso.textContent = 'Arquivo gerado.'; aviso.className = 'small mt-3 text-success';
-        })
-        .catch(function (e) { erro('Falha ao gerar o mapa: ' + e.message); })
-        .then(function () { botoes.forEach(function (b) { b.disabled = false; }); });
-    }
-    $('btnExportarPng').addEventListener('click', function () { gerarMapa('png'); });
-    $('btnExportarPdf').addEventListener('click', function () { gerarMapa('pdf'); });
 
     filtrar();
     map.fitBounds(HOME);
@@ -683,6 +604,15 @@
     }
   }
 
+  /* tabela de registros recolhida por padrão; abre ao navegar para #consulta */
+  function abrirTabelaPorLink() {
+    var el = document.getElementById('painelTabela');
+    if (!el || typeof bootstrap === 'undefined') return;
+    var abrir = function () { if (location.hash === '#consulta') bootstrap.Collapse.getOrCreateInstance(el, { toggle: false }).show(); };
+    abrir(); window.addEventListener('hashchange', abrir);
+  }
+
   iniciarMapa();
   iniciarGaleria();
+  abrirTabelaPorLink();
 })();
