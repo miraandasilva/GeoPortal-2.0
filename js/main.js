@@ -32,11 +32,9 @@
     }
 
     var map = L.map('map', { preferCanvas: true, zoomSnap: 0.25, zoomDelta: 0.5, wheelPxPerZoomLevel: 90 }).setView([-7.2, -36.8], 8);
-    var voyager = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', { maxZoom: 20, subdomains: 'abcd', crossOrigin: true, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>' }).addTo(map);
-  var claro = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 20, subdomains: 'abcd', crossOrigin: true, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>' });
-  var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, crossOrigin: true, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>' });
+  var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, crossOrigin: true, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>' }).addTo(map);
   var sat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 19, crossOrigin: true, attribution: 'Imagens &copy; Esri' });
-    L.control.layers({ 'Mapa de referência (CARTO)': voyager, 'Mapa claro (CARTO)': claro, 'OpenStreetMap': osm, 'Imagem de satélite (Esri)': sat }, null, { position: 'topright' }).addTo(map);
+    L.control.layers({ 'OpenStreetMap': osm, 'Imagem de satélite (Esri)': sat }, null, { position: 'topright' }).addTo(map);
     L.control.scale({ imperial: false, position: 'bottomleft' }).addTo(map);
     window.mapaGeoPortal = map;
 
@@ -564,7 +562,7 @@
           x.fillText(r === String(i.rot) ? r : r + '…', ix + 26 * s, y); y += step;
         });
       }
-      var base = map.hasLayer(sat) ? 'Imagens © Esri' : (map.hasLayer(claro) || map.hasLayer(voyager)) ? '© OpenStreetMap e CARTO' : '© contribuidores do OpenStreetMap';
+      var base = map.hasLayer(sat) ? 'Imagens © Esri' : '© contribuidores do OpenStreetMap';
       x.fillStyle = '#52666b'; x.font = '500 ' + 12 * s + 'px "DM Sans", sans-serif';
       x.fillText('Fonte: AESA · Base cartográfica: ' + base, m, my + mc.height + 24 * s);
       x.fillText('Sistema de coordenadas: WGS 84 (EPSG:4326) · Gerado em ' + new Date().toLocaleDateString('pt-BR'), m, my + mc.height + 42 * s);
